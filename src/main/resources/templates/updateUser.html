@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/admin/editUser}" th:object="${user}" method="post">
+    <label for="name">name</label>
+    <input type="text" th:field="*{userName}" id="name">
+    <br>
+    <label for="email">email</label>
+    <input type="text" th:field="*{email}" id="email">
+    <br>
+    <input type="hidden" th:field="*{id}">
+    <label for="password">password</label>
+    <input type="password" th:field="*{password}" id="password">
+    <button type="submit">Edit</button>
+</form>
+</body>
+</html>

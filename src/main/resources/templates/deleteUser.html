@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/admin/deleteUser}" th:object="${user}" method="post">
+    <label for="name">name</label>
+    <input type="text" th:field="*{userName}" id="name" readonly>
+    <br>
+    <label for="email">email</label>
+    <input type="text" th:field="*{email}" id="email" readonly>
+    <br>
+    <input type="hidden" th:field="*{id}">
+    <button type="submit">Delete</button>
+</form>
+</body>
+</html>

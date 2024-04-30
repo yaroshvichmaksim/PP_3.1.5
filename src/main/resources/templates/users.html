@@ -7,7 +7,7 @@
 <body>
 
 <table>
-    <caption>About you</caption>
+    <caption>List of Users</caption>
     <thead>
     <tr>
         <th>
@@ -16,14 +16,24 @@
         <th>
             Email
         </th>
+        <th>
+            Edit
+        </th>
+        <th>
+            Delete
+        </th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="user : ${user}">
+    <tr th:each="user : ${users}">
         <td th:text="${user.userName}"></td>
         <td th:text="${user.email}"></td>
+        <td><a th:href="@{'/admin/editUser?id='+${user.id}}">Edit</a></td>
+        <td><a th:href="@{'/admin/deleteUser?id='+${user.id}}">Delete</a></td>
     </tr>
     </tbody>
 </table>
+<br><br>
+<a th:href="@{'/admin/addUser'}">Add User</a>
 </body>
 </html>
