@@ -1,0 +1,31 @@
+html {
+    min-height: 100vh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+nav{
+    height: 50px;
+}
+.admin {
+    flex: 1;
+    height: calc(100vh - 50px);
+}
+
+/*.admin-panel {*/
+/*    width: 15%;*/
+/*    background-color: white;*/
+/*}*/
+.admin-row{
+    height: 100%;
+}
+.row{
+    margin-left: 0 !important;
+}

@@ -3,14 +3,13 @@ package ru.kata.spring.boot_security.demo.app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.app.dao.RoleRepository;
 import ru.kata.spring.boot_security.demo.app.dao.UserRepository;
 import ru.kata.spring.boot_security.demo.app.model.Role;
 import ru.kata.spring.boot_security.demo.app.model.User;
@@ -18,6 +17,8 @@ import ru.kata.spring.boot_security.demo.app.model.User;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -25,27 +26,52 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
 
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
     public User getUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (User)auth.getPrincipal();
+        return (User) auth.getPrincipal();
     }
 
     @Override
     public void saveUser(User user) {
 
-        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+        System.out.println(user);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    @Override
+    public void saveUser(User user, List<String> roles) {
+        Set<Role> role = roleRepository.findByNameIn(roles);
+        user.setRoles(role);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUser(User user, List<String> rolesFromView) {
+
+        User userFromDB = this.getUser(user.getId());
+
+        if (!user.getPassword().equals(userFromDB.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
+
+        user.setRoles(rolesFromView.stream()
+                .map(role -> roleRepository.findRoleByName(role))
+                .collect(Collectors.toSet()));
         userRepository.save(user);
     }
 

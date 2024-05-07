@@ -51,7 +51,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getPassword1(){
+    public String getPassword1() {
         return this.password;
     }
 
