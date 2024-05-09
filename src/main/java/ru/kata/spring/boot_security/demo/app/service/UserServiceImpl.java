@@ -22,20 +22,20 @@ import java.util.stream.Collectors;
 
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
-    @Autowired
+
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -44,14 +44,21 @@ public class UserServiceImpl implements UserService {
         return (User) auth.getPrincipal();
     }
 
+    @Transactional
     @Override
     public void saveUser(User user) {
 
-        System.out.println(user);
+        if (user.getRoles().isEmpty()) {
+            user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+        }
+        user.setRoles(user.getRoles().stream()
+                .map(role -> roleRepository.findRoleByName(role.getName()))
+                .collect(Collectors.toSet()));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public void saveUser(User user, List<String> roles) {
         Set<Role> role = roleRepository.findByNameIn(roles);
@@ -60,8 +67,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
-    public void updateUser(User user, List<String> rolesFromView) {
+    public void updateUser(User user) {
 
         User userFromDB = this.getUser(user.getId());
 
@@ -69,12 +77,17 @@ public class UserServiceImpl implements UserService {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
 
-        user.setRoles(rolesFromView.stream()
-                .map(role -> roleRepository.findRoleByName(role))
-                .collect(Collectors.toSet()));
+        if (user.getRoles().isEmpty()) {
+            user.setRoles(userFromDB.getRoles());
+        } else {
+            user.setRoles(user.getRoles().stream()
+                    .map(role -> roleRepository.findRoleByName(role.getName()))
+                    .collect(Collectors.toSet()));
+        }
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
