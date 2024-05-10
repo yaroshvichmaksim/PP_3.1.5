@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,6 +18,7 @@ public class Role implements GrantedAuthority {
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+
 
     public Role() {
 
@@ -60,5 +62,18 @@ public class Role implements GrantedAuthority {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) && Objects.equals(users, role.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, users);
     }
 }

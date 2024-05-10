@@ -39,7 +39,7 @@ async function filldeleteModal(userId) {
 
 
 async function sendDataDeleteUser(userId) {
-    await fetch(`/api/users/${userId}`,
+    await fetch(`/api/admin/${userId}`,
         {method: "DELETE"});
 }
 

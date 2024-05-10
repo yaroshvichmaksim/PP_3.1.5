@@ -1,5 +1,5 @@
 async function getUserDataById(userId) {
-    const response = await fetch(`/api/users/${userId}`);
+    const response = await fetch(`/api/admin/${userId}`);
     return await response.json();
 }
 
@@ -42,7 +42,7 @@ async function fillEditModal(userId) {
 
 
 async function sendDataEditUser(user) {
-    await fetch("/api/users",
+    await fetch("/api/admin",
         {method: "PUT", headers: {'Content-type': 'application/json'}, body: JSON.stringify(user)})
 }
 

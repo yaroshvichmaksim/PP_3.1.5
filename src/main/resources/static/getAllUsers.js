@@ -1,4 +1,4 @@
-const urlUsers = 'http://localhost:8080/api/users';
+const urlUsers = 'http://localhost:8080/api/admin';
 const tableUsers = document.getElementById('tableUsers');
 
 document.addEventListener('DOMContentLoaded', async function () {

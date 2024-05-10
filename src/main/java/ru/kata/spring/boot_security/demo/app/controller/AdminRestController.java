@@ -10,22 +10,22 @@ import ru.kata.spring.boot_security.demo.app.service.UserService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-public class UserRestController {
+@RequestMapping("/api/admin")
+public class AdminRestController {
     private final UserService userService;
 
     @Autowired
-    public UserRestController(UserService userService) {
+    public AdminRestController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/user")
-    public User getUser() {
-        User user = userService.getUser();
-        return user;
-    }
+//    @GetMapping(value = "/user")
+//    public User getUser() {
+//        User user = userService.getUser();
+//        return user;
+//    }
 
-    @GetMapping(value = "/users")
+    @GetMapping()
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
 
@@ -34,7 +34,7 @@ public class UserRestController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value = "/users/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<User> getAllUsers(@PathVariable(name = "id") Long id) {
         User user = userService.getUser(id);
 
@@ -43,19 +43,19 @@ public class UserRestController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping(value = "/users")
+    @PostMapping()
     public ResponseEntity<?> addUser(@RequestBody User user) {
         userService.saveUser(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/users")
+    @PutMapping()
     public ResponseEntity<?> editUser(@RequestBody User user) {
         userService.updateUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/users/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable(name = "id") Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
