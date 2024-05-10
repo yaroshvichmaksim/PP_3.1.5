@@ -1,4 +1,3 @@
-
 const deleteModal = document.getElementById("deleteModal")
 
 document.addEventListener('click', async function (event) {
@@ -11,6 +10,7 @@ document.addEventListener('click', async function (event) {
 async function filldeleteModal(userId) {
     try {
         const user = await getUserDataById(userId);
+        const roles = await getRoles();
 
         console.log(user);
         document.getElementById('deleteId').value = user.id;
@@ -20,15 +20,12 @@ async function filldeleteModal(userId) {
         const roleSelect = document.getElementById('deleteRole');
         roleSelect.innerHTML = '';
 
-        const optionUser = document.createElement('option');
-        optionUser.value = 'ROLE_USER';
-        optionUser.textContent = 'USER';
-        roleSelect.appendChild(optionUser);
-
-        const optionAdmin = document.createElement('option');
-        optionAdmin.value = 'ROLE_ADMIN';
-        optionAdmin.textContent = 'ADMIN';
-        roleSelect.appendChild(optionAdmin);
+        for (let role of roles) {
+            const optionRole = document.createElement('option');
+            optionRole.value = roles.name;
+            optionRole.textContent = role.name.replace('ROLE_', '');
+            roleSelect.appendChild(optionRole);
+        }
 
         const deleteModal = document.getElementById('deleteModal');
 
@@ -43,12 +40,17 @@ async function sendDataDeleteUser(userId) {
         {method: "DELETE"});
 }
 
+async function getRoles() {
+    const response = await fetch('/api/admin/roles');
+    return await response.json();
+}
+
 const modalDelete = document.getElementById("deleteModal");
 
 modalDelete.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const userId= event.target.querySelector("#deleteId").value;
+    const userId = event.target.querySelector("#deleteId").value;
 
     await sendDataDeleteUser(userId);
     document.querySelector('button#closeDeleteForm').click();

@@ -15,6 +15,7 @@ document.addEventListener('click', async function (event) {
 async function fillEditModal(userId) {
     try {
         const user = await getUserDataById(userId);
+        const roles = await getRoles();
 
         document.getElementById('editId').value = user.id;
         document.getElementById('editName').value = user.userName;
@@ -22,16 +23,13 @@ async function fillEditModal(userId) {
 
         const roleSelect = document.getElementById('editRole');
         roleSelect.innerHTML = '';
-
-        const optionUser = document.createElement('option');
-        optionUser.value = 'ROLE_USER';
-        optionUser.textContent = 'USER';
-        roleSelect.appendChild(optionUser);
-
-        const optionAdmin = document.createElement('option');
-        optionAdmin.value = 'ROLE_ADMIN';
-        optionAdmin.textContent = 'ADMIN';
-        roleSelect.appendChild(optionAdmin);
+        console.log(roles);
+        for (let role of roles) {
+            const optionRole = document.createElement('option');
+            optionRole.value = role.name;
+            optionRole.textContent = role.name.replace('ROLE_', '');
+            roleSelect.appendChild(optionRole);
+        }
 
         const editModal = document.getElementById('editModal');
 
