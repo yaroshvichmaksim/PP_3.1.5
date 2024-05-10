@@ -11,6 +11,7 @@ public class UserController {
     public String getUser(Model model) {
         return "user";
     }
+
     @GetMapping("/admin")
     public String getAdmin(Model model) {
         return "users";
