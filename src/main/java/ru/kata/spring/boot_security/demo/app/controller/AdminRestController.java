@@ -19,11 +19,6 @@ public class AdminRestController {
         this.userService = userService;
     }
 
-//    @GetMapping(value = "/user")
-//    public User getUser() {
-//        User user = userService.getUser();
-//        return user;
-//    }
 
     @GetMapping()
     public ResponseEntity<List<User>> getAllUsers() {
